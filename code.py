@@ -1,4 +1,58 @@
 # blinky eyeballs for classroom skull; this version uses TFT display
+# 
+# MIT License
+# 
+# Copyright (c) 2019 Don Korte
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+# 
+
+"""
+blinky eyeballs for classroom skull; CircuitPython version 
+===========================================================
+
+Author(s): Don Korte
+
+this version uses TFT display, and requires an M4 class ItsyBitsy
+must create lib/ folder and install the following Adafruit libraries:
+    adafruit_display_text (folder)
+    adafruit_display_shapes (folder)
+    adafruit_st7735r.mpy
+    neopixel.mpy
+
+ItsyBitsy pin connections:
+    to NeoPixel: 5!
+    to TFT (1.8in TFT http://www.adafruit.com/products/358):
+        SCK /   SCK
+        MOSI /  MOSI
+        10:     CS
+        9:      Reset
+        7:      DC
+        (Note also TFT requires power, ground, and backlight)
+        (Note also ItsyBitsy requires Vbat and Gnd, and it also supplies power for PB pullup (Vhi))
+    to pushbutton: 11  (normally pulled high, press takes it low)
+
+
+"""
+
+_version__ = "2.0.0"
+__repo__ = "https://github.com/dnkorte/blinky_eyes"
 
 import board
 import time
@@ -7,18 +61,11 @@ import displayio
 import terminalio
 from adafruit_st7735r import ST7735R
 from adafruit_display_text import label
-# from adafruit_display_shapes.circle import Circle
+from adafruit_display_shapes.circle import Circle
 import neopixel
 
-# setup for NeoPixels #############################################################
-
-# RED = (255, 0, 0, 0)
-# YELLOW = (255, 150, 0, 0)
-# GREEN = (0, 255, 0, 0)
-# CYAN = (0, 255, 255, 0)
-# BLUE = (0, 0, 255, 0)
-# PURPLE = (180, 0, 255, 0)
-# OFF = (0, 0, 0, 0)
+# setup for NeoPixels (RGB) ########################################################
+# NeoPixel "strip" (of 2 individual LEDS Adafruit 1938) connected on D5
 
 RED = (255, 0, 0)
 YELLOW = (255, 150, 0)
@@ -26,13 +73,24 @@ GREEN = (0, 255, 0)
 CYAN = (0, 255, 255)
 BLUE = (0, 0, 255)
 PURPLE = (180, 0, 255)
-ORANGE = (80, 40, 0)
+UGLYORANGE = (80, 40, 0)
+ORANGE1 = (115, 20, 0)
+ORANGE = (115, 25, 0)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 BRIGHTGRAY = (100, 100, 100)
 OFF = (0, 0, 0)
 
-# NeoPixel strip (of 2 individual LEDS Adafruit 1938) connected on D5
+NUMPIXELS = 2
+ORDER = neopixel.RGB
+neopixels = neopixel.NeoPixel(board.D5, NUMPIXELS, brightness=0.2, auto_write=False, pixel_order=ORDER)
+# neopixels[0] = RED
+# neopixels[1] = RED
+# neopixels.show()
+
+
+
+# color definitions for TFT display
 D_RED = 0xFF0000
 D_GREEN = 0x00FF00
 D_BLUE = 0x0000FF
@@ -40,10 +98,6 @@ D_YELLOW = 0xFFFF00
 D_ORANGE = 0xFF8000
 D_BLACK = 0x000000
 D_WHITE = 0xFFFFFF
-
-NUMPIXELS = 2
-ORDER = neopixel.RGB
-neopixels = neopixel.NeoPixel(board.D5, NUMPIXELS, brightness=0.2, auto_write=False, pixel_order=ORDER)
 
 # setup ST7735 display 1.8in TFT http://www.adafruit.com/products/358 ###############
 # see https://github.com/adafruit/Adafruit_CircuitPython_ST7735R/blob/master/examples/st7735r_128x160_simpletest.py
@@ -108,7 +162,7 @@ mode = 0
 mode_initiated = False
 mode_duration_counter = 0
 mode_phase = 0
-HIGHEST_MODE = 8
+HIGHEST_MODE = 9
 
 # Built in red LED
 led = DigitalInOut(board.D13)
@@ -264,7 +318,6 @@ while True:
         if not mode_initiated:
             neopixels[0] = ORANGE
             neopixels[1] = ORANGE
-            mode_phase = 1          # for this mode phase 0 is R/G, phase 1 is G/R
             neopixels.show()
             mode_initiated = True
             modenum_textbox.text = " 7 Pumpkin"
@@ -273,14 +326,27 @@ while True:
             right_palette[0] = D_ORANGE
             rightb_palette[0] = D_WHITE
         else:
-            if mode_duration_counter <= 44:
+            # if mode_duration_counter < 2:
+            #     neopixels[0] = ORANGE
+            #     neopixels[1] = ORANGE
+            #     neopixels.show()
+            if mode_duration_counter == 45:
+                neopixels[0] = WHITE
+                neopixels[1] = WHITE
+                neopixels.show()
+            elif mode_duration_counter == 47:
                 neopixels[0] = ORANGE
                 neopixels[1] = ORANGE
-            elif mode_duration_counter <=45:
-                neopixels[0] = BRIGHTGRAY
-                neopixels[1] = BRIGHTGRAY
-            neopixels.show()
-            if mode_duration_counter > 45:
+                neopixels.show()
+            elif mode_duration_counter == 48:
+                neopixels[0] = WHITE
+                neopixels[1] = WHITE
+                neopixels.show()
+            # neopixels.show()
+            if mode_duration_counter > 49:
+                neopixels[0] = ORANGE
+                neopixels[1] = ORANGE
+                neopixels.show()
                 mode_duration_counter = 0
 
 
@@ -308,5 +374,28 @@ while True:
                     mode_phase = 0
                 neopixels.show()
                 mode_duration_counter = 0
+
+    elif mode == 9:                 # test colors mode
+        if not mode_initiated:
+            r = 0
+            g = 0
+            neopixels[0] = (r, g, 0)
+            neopixels[1] = (r, g, 100)
+            neopixels.show()
+            mode_initiated = True
+            modenum_textbox.text = " 9 COLORTST"
+            left_palette[0] = D_RED
+            leftb_palette[0] = D_GREEN
+            right_palette[0] = D_GREEN
+            rightb_palette[0] = D_RED
+        else:
+            r += 5
+            if r > 255:
+                g += 5
+                r = 0
+            neopixels[0] = (r, g, 0)
+            neopixels[1] = (r, g, 100)            
+            neopixels.show()
+            print("r="+str(r)+" g="+str(g))
 
     time.sleep(0.1)
