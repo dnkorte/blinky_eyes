@@ -84,11 +84,6 @@ OFF = (0, 0, 0)
 NUMPIXELS = 2
 ORDER = neopixel.RGB
 neopixels = neopixel.NeoPixel(board.D5, NUMPIXELS, brightness=0.2, auto_write=False, pixel_order=ORDER)
-# neopixels[0] = RED
-# neopixels[1] = RED
-# neopixels.show()
-
-
 
 # color definitions for TFT display
 D_RED = 0xFF0000
@@ -114,40 +109,10 @@ display = ST7735R(display_bus, width=160, height=128, rotation=90, bgr=True)
 splash = displayio.Group(max_size=10)
 display.show(splash)
 
-# Draw smaller inner rectangles to represent left LED
-left_bitmap = displayio.Bitmap(30, 15, 1)
-left_palette = displayio.Palette(1)
-left_palette[0] = D_RED
-left_sprite = displayio.TileGrid(left_bitmap,
-                                  pixel_shader=left_palette,
-                                  x=35, y=25)
-splash.append(left_sprite)
-
-leftb_bitmap = displayio.Bitmap(30, 15, 1)
-leftb_palette = displayio.Palette(1)
-leftb_palette[0] = D_RED
-leftb_sprite = displayio.TileGrid(leftb_bitmap,
-                                  pixel_shader=leftb_palette,
-                                  x=35, y=40)
-splash.append(leftb_sprite)
-
-#  Draw smaller inner rectangles to represent right LED
-right_bitmap = displayio.Bitmap(30, 15, 1)
-right_palette = displayio.Palette(1)
-right_palette[0] = D_RED
-right_sprite = displayio.TileGrid(right_bitmap,
-                                  pixel_shader=right_palette,
-                                  x=95, y=25)
-splash.append(right_sprite)
-
-rightb_bitmap = displayio.Bitmap(30, 15, 1)
-rightb_palette = displayio.Palette(1)
-rightb_palette[0] = D_RED
-rightb_sprite = displayio.TileGrid(rightb_bitmap,
-                                  pixel_shader=rightb_palette,
-                                  x=95, y=40)
-splash.append(rightb_sprite)
-
+left_circle = Circle(40, 30, 15, fill=D_RED)
+splash.append(left_circle)
+right_circle = Circle(120, 30, 15, fill=D_RED)
+splash.append(right_circle)
 
 text_group = displayio.Group(max_size=10, scale=2, x=11, y=94)
 # text_group = displayio.Group(max_size=10, scale=2, x=11, y=48)
@@ -197,8 +162,8 @@ while True:
     icon_counter += 1
     if icon_counter > 3:
         icon_counter = 0
-    left_palette[0] = left_icon[icon_counter]
-    right_palette[0] = right_icon[icon_counter]
+    left_circle.fill = left_icon[icon_counter]
+    right_circle.fill = right_icon[icon_counter]
 
     if mode == 0:                   # both solid red
         if not mode_initiated:
@@ -209,10 +174,8 @@ while True:
             modenum_textbox.text = " 0 RR Solid"
             left_icon = [ D_RED, D_RED, D_RED, D_RED ]
             right_icon = [ D_RED, D_RED, D_RED, D_RED ]
-            # left_palette[0] = D_RED
-            # leftb_palette[0] = D_RED
-            # right_palette[0] = D_RED
-            # rightb_palette[0] = D_RED
+            left_circle.fill = left_icon[0]
+            right_circle.fill = right_icon[0]
 
     elif mode == 1:                 # both solid green
         if not mode_initiated:
@@ -223,10 +186,8 @@ while True:
             modenum_textbox.text = " 1 GG Solid"
             left_icon = [ D_GREEN, D_GREEN, D_GREEN, D_GREEN ]
             right_icon = [ D_GREEN, D_GREEN, D_GREEN, D_GREEN ]
-            # left_palette[0] = D_GREEN
-            # leftb_palette[0] = D_GREEN
-            # right_palette[0] = D_GREEN
-            # rightb_palette[0] = D_GREEN
+            left_circle.fill = left_icon[0]
+            right_circle.fill = right_icon[0]
 
     elif mode == 2:                 # both solid blue
         if not mode_initiated:
@@ -238,10 +199,8 @@ while True:
             modenum_textbox.text = " 1 GG Solid"
             left_icon = [ D_BLUE, D_BLUE, D_BLUE, D_BLUE ]
             right_icon = [ D_BLUE, D_BLUE, D_BLUE, D_BLUE ]
-            # left_palette[0] = D_BLUE
-            # leftb_palette[0] = D_BLUE
-            # right_palette[0] = D_BLUE
-            # rightb_palette[0] = D_BLUE
+            left_circle.fill = left_icon[0]
+            right_circle.fill = right_icon[0]
 
     elif mode == 3:                 # both solid yellow
         if not mode_initiated:
@@ -252,10 +211,8 @@ while True:
             modenum_textbox.text = " 3 YY Solid"
             left_icon = [ D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW ]
             right_icon = [ D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW ]
-            # left_palette[0] = D_YELLOW
-            # leftb_palette[0] = D_YELLOW
-            # right_palette[0] = D_YELLOW
-            # rightb_palette[0] = D_YELLOW
+            left_circle.fill = left_icon[0]
+            right_circle.fill = right_icon[0]
 
     elif mode == 4:                 # flipping red / green
         if not mode_initiated:
@@ -267,10 +224,8 @@ while True:
             modenum_textbox.text = " 4 RG Flip"
             left_icon = [ D_RED, D_RED, D_GREEN, D_GREEN ]
             right_icon = [ D_GREEN, D_GREEN, D_RED, D_RED ]
-            # left_palette[0] = D_RED
-            # leftb_palette[0] = D_GREEN
-            # right_palette[0] = D_GREEN
-            # rightb_palette[0] = D_RED
+            left_circle.fill = left_icon[0]
+            right_circle.fill = right_icon[0]
         else:
             if mode_duration_counter >= 9:
                 if mode_phase == 0:
@@ -294,10 +249,8 @@ while True:
             modenum_textbox.text = " 5 YY Flash"
             left_icon = [ D_YELLOW, D_YELLOW, D_BLACK, D_BLACK ]
             right_icon = [ D_YELLOW, D_YELLOW, D_BLACK, D_BLACK ]
-            # left_palette[0] = D_YELLOW
-            # leftb_palette[0] = D_BLACK
-            # right_palette[0] = D_BLACK
-            # rightb_palette[0] = D_YELLOW
+            left_circle.fill = left_icon[0]
+            right_circle.fill = right_icon[0]
         else:
             if mode_duration_counter >= 5:
                 if mode_phase == 0:
@@ -322,10 +275,8 @@ while True:
             modenum_textbox.text = " 6 BY Flip"
             left_icon = [ D_BLUE, D_BLUE, D_YELLOW, D_YELLOW ]
             right_icon = [ D_YELLOW, D_YELLOW, D_BLUE, D_BLUE ]
-            # left_palette[0] = D_BLUE
-            # leftb_palette[0] = D_YELLOW
-            # right_palette[0] = D_YELLOW
-            # rightb_palette[0] = D_BLUE
+            left_circle.fill = left_icon[0]
+            right_circle.fill = right_icon[0]
         else:
             if mode_duration_counter >= 9:
                 if mode_phase == 0:
@@ -348,15 +299,9 @@ while True:
             modenum_textbox.text = " 7 Pumpkin"
             left_icon = [ D_ORANGE, D_ORANGE, D_ORANGE, D_WHITE ]
             right_icon = [ D_ORANGE, D_ORANGE, D_ORANGE, D_WHITE ]
-            # left_palette[0] = D_ORANGE
-            # leftb_palette[0] = D_WHITE
-            # right_palette[0] = D_ORANGE
-            # rightb_palette[0] = D_WHITE
+            left_circle.fill = left_icon[0]
+            right_circle.fill = right_icon[0]
         else:
-            # if mode_duration_counter < 2:
-            #     neopixels[0] = ORANGE
-            #     neopixels[1] = ORANGE
-            #     neopixels.show()
             if mode_duration_counter == 45:
                 neopixels[0] = WHITE
                 neopixels[1] = WHITE
@@ -387,10 +332,8 @@ while True:
             modenum_textbox.text = " 8 RG FastF"
             left_icon = [ D_RED, D_GREEN, D_RED, D_GREEN ]
             right_icon = [ D_GREEN, D_RED, D_GREEN, D_RED ]
-            # left_palette[0] = D_RED
-            # leftb_palette[0] = D_GREEN
-            # right_palette[0] = D_GREEN
-            # rightb_palette[0] = D_RED
+            left_circle.fill = left_icon[0]
+            right_circle.fill = right_icon[0]
         else:
             if mode_duration_counter >= 3:
                 if mode_phase == 0:
@@ -415,10 +358,8 @@ while True:
             modenum_textbox.text = " 9 COLORTST"
             left_icon = [ D_RED, D_GREEN, D_YELLOW, D_BLUE ]
             right_icon = [ D_BLUE, D_YELLOW, D_GREEN, D_RED ]
-            # left_palette[0] = D_RED
-            # leftb_palette[0] = D_GREEN
-            # right_palette[0] = D_GREEN
-            # rightb_palette[0] = D_RED
+            left_circle.fill = left_icon[0]
+            right_circle.fill = right_icon[0]
         else:
             r += 5
             if r > 255:
