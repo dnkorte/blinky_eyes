@@ -34,6 +34,7 @@ must create lib/ folder and install the following Adafruit libraries:
     adafruit_display_text (folder)
     adafruit_display_shapes (folder)
     adafruit_st7735r.mpy
+    adafruit_debouncer.mpy
     neopixel.mpy
 
 ItsyBitsy pin connections:
@@ -62,7 +63,21 @@ import terminalio
 from adafruit_st7735r import ST7735R
 from adafruit_display_text import label
 from adafruit_display_shapes.circle import Circle
+from adafruit_debouncer import Debouncer
 import neopixel
+
+def wheel(pos):
+    # Input a value 0 to 255 to get a color value.
+    # The colours are a transition r - g - b - back to r.
+    if pos < 0 or pos > 255:
+        return (0, 0, 0)
+    if pos < 85:
+        return (255 - pos * 3, pos * 3, 0)
+    if pos < 170:
+        pos -= 85
+        return (0, 255 - pos * 3, pos * 3)
+    pos -= 170
+    return (pos * 3, 0, 255 - pos * 3)
 
 # setup for NeoPixels (RGB) ########################################################
 # NeoPixel "strip" (of 2 individual LEDS Adafruit 1938) connected on D5
@@ -138,29 +153,35 @@ led.direction = Direction.OUTPUT
 button = DigitalInOut(board.D11)
 button.direction = Direction.INPUT
 button.pull = Pull.UP
+debounced_button = Debouncer(button)
 
-left_icon = [ D_RED, D_RED, D_RED, D_RED ]
-right_icon = [ D_RED, D_RED, D_RED, D_RED ]
+
+left_icon = [ D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED ]
+right_icon = [ D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED ]
 
 while True:
     # check_button()
-    if not button.value:
+    # if not button.value:
+    debounced_button.update()
+    if debounced_button.fell:
         led.value = True
-        mode = mode + 1
+        mode += 1
         if mode > HIGHEST_MODE:
             mode = 0
         mode_initiated = False
         mode_duration_counter = 0
         mode_phase = 0
-        while not button.value:
-            pass
+        # while not button.value:
+        #     pass 
+        # while not debounced_button.rose:
+        #     pass
         led.value = False
 
     if mode_initiated:
         mode_duration_counter = mode_duration_counter + 1
 
     icon_counter += 1
-    if icon_counter > 3:
+    if icon_counter > 7:
         icon_counter = 0
     left_circle.fill = left_icon[icon_counter]
     right_circle.fill = right_icon[icon_counter]
@@ -172,8 +193,8 @@ while True:
             neopixels.show()
             mode_initiated = True
             modenum_textbox.text = " 0 RR Solid"
-            left_icon = [ D_RED, D_RED, D_RED, D_RED ]
-            right_icon = [ D_RED, D_RED, D_RED, D_RED ]
+            left_icon = [ D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED ]
+            right_icon = [ D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED ]
             left_circle.fill = left_icon[0]
             right_circle.fill = right_icon[0]
 
@@ -184,8 +205,8 @@ while True:
             neopixels.show()
             mode_initiated = True
             modenum_textbox.text = " 1 GG Solid"
-            left_icon = [ D_GREEN, D_GREEN, D_GREEN, D_GREEN ]
-            right_icon = [ D_GREEN, D_GREEN, D_GREEN, D_GREEN ]
+            left_icon = [ D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN ]
+            right_icon = [ D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN ]
             left_circle.fill = left_icon[0]
             right_circle.fill = right_icon[0]
 
@@ -196,9 +217,8 @@ while True:
             neopixels.show()
             mode_initiated = True
             modenum_textbox.text = " 2 BB Solid"
-            modenum_textbox.text = " 1 GG Solid"
-            left_icon = [ D_BLUE, D_BLUE, D_BLUE, D_BLUE ]
-            right_icon = [ D_BLUE, D_BLUE, D_BLUE, D_BLUE ]
+            left_icon = [ D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE ]
+            right_icon = [ D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE ]
             left_circle.fill = left_icon[0]
             right_circle.fill = right_icon[0]
 
@@ -209,8 +229,8 @@ while True:
             neopixels.show()
             mode_initiated = True
             modenum_textbox.text = " 3 YY Solid"
-            left_icon = [ D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW ]
-            right_icon = [ D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW ]
+            left_icon = [ D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW ]
+            right_icon = [ D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW ]
             left_circle.fill = left_icon[0]
             right_circle.fill = right_icon[0]
 
@@ -222,12 +242,12 @@ while True:
             neopixels.show()
             mode_initiated = True
             modenum_textbox.text = " 4 RG Flip"
-            left_icon = [ D_RED, D_RED, D_GREEN, D_GREEN ]
-            right_icon = [ D_GREEN, D_GREEN, D_RED, D_RED ]
+            left_icon = [ D_RED, D_RED, D_GREEN, D_GREEN, D_RED, D_RED, D_GREEN, D_GREEN ]
+            right_icon = [ D_GREEN, D_GREEN, D_RED, D_RED, D_GREEN, D_GREEN, D_RED, D_RED, ]
             left_circle.fill = left_icon[0]
             right_circle.fill = right_icon[0]
         else:
-            if mode_duration_counter >= 9:
+            if mode_duration_counter >= 12:
                 if mode_phase == 0:
                     neopixels[0] = GREEN
                     neopixels[1] = RED
@@ -247,8 +267,8 @@ while True:
             neopixels.show()
             mode_initiated = True
             modenum_textbox.text = " 5 YY Flash"
-            left_icon = [ D_YELLOW, D_YELLOW, D_BLACK, D_BLACK ]
-            right_icon = [ D_YELLOW, D_YELLOW, D_BLACK, D_BLACK ]
+            left_icon = [ D_YELLOW, D_YELLOW, D_BLACK, D_BLACK, D_YELLOW, D_YELLOW, D_BLACK, D_BLACK ]
+            right_icon = [ D_YELLOW, D_YELLOW, D_BLACK, D_BLACK, D_YELLOW, D_YELLOW, D_BLACK, D_BLACK ]
             left_circle.fill = left_icon[0]
             right_circle.fill = right_icon[0]
         else:
@@ -273,12 +293,12 @@ while True:
             neopixels.show()
             mode_initiated = True
             modenum_textbox.text = " 6 BY Flip"
-            left_icon = [ D_BLUE, D_BLUE, D_YELLOW, D_YELLOW ]
-            right_icon = [ D_YELLOW, D_YELLOW, D_BLUE, D_BLUE ]
+            left_icon = [ D_BLUE, D_BLUE, D_YELLOW, D_YELLOW, D_BLUE, D_BLUE, D_YELLOW, D_YELLOW ]
+            right_icon = [ D_YELLOW, D_YELLOW, D_BLUE, D_BLUE, D_YELLOW, D_YELLOW, D_BLUE, D_BLUE ]
             left_circle.fill = left_icon[0]
             right_circle.fill = right_icon[0]
         else:
-            if mode_duration_counter >= 9:
+            if mode_duration_counter >= 12:
                 if mode_phase == 0:
                     neopixels[0] = BLUE
                     neopixels[1] = YELLOW
@@ -297,8 +317,8 @@ while True:
             neopixels.show()
             mode_initiated = True
             modenum_textbox.text = " 7 Pumpkin"
-            left_icon = [ D_ORANGE, D_ORANGE, D_ORANGE, D_WHITE ]
-            right_icon = [ D_ORANGE, D_ORANGE, D_ORANGE, D_WHITE ]
+            left_icon = [ D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_WHITE ]
+            right_icon = [ D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_WHITE ]
             left_circle.fill = left_icon[0]
             right_circle.fill = right_icon[0]
         else:
@@ -330,8 +350,8 @@ while True:
             neopixels.show()
             mode_initiated = True
             modenum_textbox.text = " 8 RG FastF"
-            left_icon = [ D_RED, D_GREEN, D_RED, D_GREEN ]
-            right_icon = [ D_GREEN, D_RED, D_GREEN, D_RED ]
+            left_icon = [ D_RED, D_GREEN, D_RED, D_GREEN, D_RED, D_GREEN, D_RED, D_GREEN ]
+            right_icon = [ D_GREEN, D_RED, D_GREEN, D_RED , D_GREEN, D_RED, D_GREEN, D_RED ]
             left_circle.fill = left_icon[0]
             right_circle.fill = right_icon[0]
         else:
@@ -349,25 +369,25 @@ while True:
 
     elif mode == 9:                 # test colors mode
         if not mode_initiated:
-            r = 0
-            g = 0
-            neopixels[0] = (r, g, 0)
-            neopixels[1] = (r, g, 100)
+            mode_phase = 1
+            neopixels[0] = BLACK
+            neopixels[1] = BLACK
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 9 COLORTST"
-            left_icon = [ D_RED, D_GREEN, D_YELLOW, D_BLUE ]
-            right_icon = [ D_BLUE, D_YELLOW, D_GREEN, D_RED ]
+            modenum_textbox.text = " 9 RAINBO"
+            left_icon = [ D_RED, D_GREEN, D_YELLOW, D_BLUE, D_ORANGE, D_YELLOW, D_GREEN, D_YELLOW ]
+            right_icon = [ D_YELLOW, D_GREEN, D_YELLOW, D_ORANGE, D_BLUE, D_YELLOW, D_GREEN, D_RED ]
             left_circle.fill = left_icon[0]
             right_circle.fill = right_icon[0]
         else:
-            r += 5
-            if r > 255:
-                g += 5
-                r = 0
-            neopixels[0] = (r, g, 0)
-            neopixels[1] = (r, g, 100)            
+            mode_phase += 3
+            if mode_phase > 255:
+                mode_phase = 1
+            neopixels[0] = wheel(mode_phase)
+            right_code = (mode_phase + 128) & 255
+            # if right_code == 0:
+            #     right_code = 1
+            neopixels[1] = wheel((mode_phase + 128) & 255)          
             neopixels.show()
-            print("r="+str(r)+" g="+str(g))
 
     time.sleep(0.1)
