@@ -129,13 +129,22 @@ splash.append(left_circle)
 right_circle = Circle(120, 30, 15, fill=D_RED)
 splash.append(right_circle)
 
-text_group = displayio.Group(max_size=10, scale=2, x=11, y=94)
-# text_group = displayio.Group(max_size=10, scale=2, x=11, y=48)
 text = ""
-modenum_textbox = label.Label(terminalio.FONT, text=text, color=0xFFFF00, max_glyphs=12)
-text_group.append(modenum_textbox) # Subgroup for text scaling
+text_group1 = displayio.Group(max_size=2, scale=2, x=13, y=88)
+line1_textbox = label.Label(terminalio.FONT, text=text, color=D_YELLOW, max_glyphs=12)
+text_group1.append(line1_textbox) 
+splash.append(text_group1)
 
-splash.append(text_group)
+text_group2 = displayio.Group(max_size=2, scale=2, x=13, y=112)
+line2_textbox = label.Label(terminalio.FONT, text=text, color=D_YELLOW, max_glyphs=12)
+text_group2.append(line2_textbox) 
+splash.append(text_group2)
+
+text_group3 = displayio.Group(max_size=2, scale=3, x=72, y=56)
+modenum_textbox = label.Label(terminalio.FONT, text=text, color=D_YELLOW, max_glyphs=2)
+text_group3.append(modenum_textbox) 
+splash.append(text_group3)
+
 
 # setup environment #################################################################
 mode = 0
@@ -192,7 +201,10 @@ while True:
             neopixels[1] = RED
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 0 RR Solid"
+            modenum_textbox.text = str(mode)
+            #                    "------------"
+            line1_textbox.text = "  RED RED"
+            line2_textbox.text = "   SOLID"
             left_icon = [ D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED ]
             right_icon = [ D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED ]
             left_circle.fill = left_icon[0]
@@ -204,7 +216,9 @@ while True:
             neopixels[1] = GREEN
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 1 GG Solid"
+            modenum_textbox.text = str(mode)
+            line1_textbox.text = "GREEN GREEN"
+            line2_textbox.text = "   SOLID"
             left_icon = [ D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN ]
             right_icon = [ D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN ]
             left_circle.fill = left_icon[0]
@@ -216,7 +230,9 @@ while True:
             neopixels[1] = BLUE
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 2 BB Solid"
+            modenum_textbox.text = str(mode)
+            line1_textbox.text = " BLUE BLUE"
+            line2_textbox.text = "   SOLID"
             left_icon = [ D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE ]
             right_icon = [ D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE ]
             left_circle.fill = left_icon[0]
@@ -228,7 +244,9 @@ while True:
             neopixels[1] = YELLOW
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 3 YY Solid"
+            modenum_textbox.text = str(mode)
+            line1_textbox.text = "YELLO YELLO"
+            line2_textbox.text = "   SOLID"
             left_icon = [ D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW ]
             right_icon = [ D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW ]
             left_circle.fill = left_icon[0]
@@ -241,7 +259,9 @@ while True:
             mode_phase = 1          # for this mode phase 0 is R/G, phase 1 is G/R
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 4 RG Flip"
+            modenum_textbox.text = str(mode)
+            line1_textbox.text = " RED GREEN"
+            line2_textbox.text = "    FLIP"
             left_icon = [ D_RED, D_RED, D_GREEN, D_GREEN, D_RED, D_RED, D_GREEN, D_GREEN ]
             right_icon = [ D_GREEN, D_GREEN, D_RED, D_RED, D_GREEN, D_GREEN, D_RED, D_RED, ]
             left_circle.fill = left_icon[0]
@@ -266,7 +286,9 @@ while True:
             mode_phase = 1          # for this mode phase 0 is R/G, phase 1 is G/R
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 5 YY Flash"
+            modenum_textbox.text = str(mode)
+            line1_textbox.text = "YELLO YELLO"
+            line2_textbox.text = "   FLASH"
             left_icon = [ D_YELLOW, D_YELLOW, D_BLACK, D_BLACK, D_YELLOW, D_YELLOW, D_BLACK, D_BLACK ]
             right_icon = [ D_YELLOW, D_YELLOW, D_BLACK, D_BLACK, D_YELLOW, D_YELLOW, D_BLACK, D_BLACK ]
             left_circle.fill = left_icon[0]
@@ -292,7 +314,9 @@ while True:
             mode_phase = 1          # for this mode phase 0 is R/G, phase 1 is G/R
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 6 BY Flip"
+            modenum_textbox.text = str(mode)
+            line1_textbox.text = "BLUE YELLOW"
+            line2_textbox.text = "    FLIP"
             left_icon = [ D_BLUE, D_BLUE, D_YELLOW, D_YELLOW, D_BLUE, D_BLUE, D_YELLOW, D_YELLOW ]
             right_icon = [ D_YELLOW, D_YELLOW, D_BLUE, D_BLUE, D_YELLOW, D_YELLOW, D_BLUE, D_BLUE ]
             left_circle.fill = left_icon[0]
@@ -316,7 +340,9 @@ while True:
             neopixels[1] = ORANGE
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 7 Pumpkin"
+            modenum_textbox.text = str(mode)
+            line1_textbox.text = "  PUMPKIN"
+            line2_textbox.text = " "
             left_icon = [ D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_WHITE ]
             right_icon = [ D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_WHITE ]
             left_circle.fill = left_icon[0]
@@ -349,7 +375,9 @@ while True:
             mode_phase = 1          # for this mode phase 0 is R/G, phase 1 is G/R
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 8 RG FastF"
+            modenum_textbox.text = str(mode)
+            line1_textbox.text = " RED GREEN"
+            line2_textbox.text = " FAST FLIP"
             left_icon = [ D_RED, D_GREEN, D_RED, D_GREEN, D_RED, D_GREEN, D_RED, D_GREEN ]
             right_icon = [ D_GREEN, D_RED, D_GREEN, D_RED , D_GREEN, D_RED, D_GREEN, D_RED ]
             left_circle.fill = left_icon[0]
@@ -367,14 +395,16 @@ while True:
                 neopixels.show()
                 mode_duration_counter = 0
 
-    elif mode == 9:                 # test colors mode
+    elif mode == 9:                 
         if not mode_initiated:
             mode_phase = 1
             neopixels[0] = BLACK
             neopixels[1] = BLACK
             neopixels.show()
             mode_initiated = True
-            modenum_textbox.text = " 9 RAINBO"
+            modenum_textbox.text = str(mode)
+            line1_textbox.text = "  RAINBOW"
+            line2_textbox.text = " "
             left_icon = [ D_RED, D_GREEN, D_YELLOW, D_BLUE, D_ORANGE, D_YELLOW, D_GREEN, D_YELLOW ]
             right_icon = [ D_YELLOW, D_GREEN, D_YELLOW, D_ORANGE, D_BLUE, D_YELLOW, D_GREEN, D_RED ]
             left_circle.fill = left_icon[0]
