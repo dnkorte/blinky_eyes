@@ -75,6 +75,27 @@ def wheel(pos):
     pos -= 170
     return (pos * 3, 0, 255 - pos * 3)
 
+def display_line1(text):
+    line1_textbox.text = text
+    _, _, textwidth, _ = line1_textbox.bounding_box
+    # note this field is scaled by 2 so we initially center it in a 80 pixel space
+    new_x = int(2 * (40 - (textwidth/2)))
+    text_group1.x = new_x
+
+def display_line2(text):
+    line2_textbox.text = text
+    _, _, textwidth, _ = line2_textbox.bounding_box
+    # note this field is scaled by 2 so we initially center it in a 80 pixel space
+    new_x = int(2 * (40 - (textwidth/2)))
+    text_group2.x = new_x
+
+def display_line3(text):
+    modenum_textbox.text = text
+    _, _, textwidth, _ = modenum_textbox.bounding_box
+    # note this field is scaled by 3 so we initially center it in a 53 pixel space
+    new_x = int(3 * (26.5 - (textwidth/2)))
+    text_group3.x = new_x
+
 # setup for NeoPixels (RGB) ########################################################
 # NeoPixel "strip" (of 2 individual LEDS Adafruit 1938) connected on D5
 
@@ -126,17 +147,18 @@ right_circle = Circle(120, 30, 15, fill=D_RED)
 splash.append(right_circle)
 
 text = ""
-text_group1 = displayio.Group(max_size=2, scale=2, x=13, y=88)
+text_group1 = displayio.Group(max_size=2, scale=2, x=0, y=88)
 line1_textbox = label.Label(terminalio.FONT, text=text, color=D_YELLOW, max_glyphs=12)
 text_group1.append(line1_textbox) 
 splash.append(text_group1)
 
-text_group2 = displayio.Group(max_size=2, scale=2, x=13, y=112)
+text_group2 = displayio.Group(max_size=2, scale=2, x=0, y=112)
 line2_textbox = label.Label(terminalio.FONT, text=text, color=D_YELLOW, max_glyphs=12)
 text_group2.append(line2_textbox) 
 splash.append(text_group2)
 
-text_group3 = displayio.Group(max_size=2, scale=3, x=72, y=56)
+# text_group3 = displayio.Group(max_size=2, scale=3, x=72, y=56)
+text_group3 = displayio.Group(max_size=2, scale=3, x=0, y=56)
 modenum_textbox = label.Label(terminalio.FONT, text=text, color=D_YELLOW, max_glyphs=2)
 text_group3.append(modenum_textbox) 
 splash.append(text_group3)
@@ -197,9 +219,9 @@ while True:
     if mode == 0:                   # both solid red
         if not mode_initiated:
             mode_initiated = True
-            modenum_textbox.text = str(mode)
-            line1_textbox.text = "  RED RED"
-            line2_textbox.text = "   SOLID"
+            display_line1("RED RED")
+            display_line2("SOLID")
+            display_line3(str(mode))
             left_colors = [ D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED ]
             right_colors = [ D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED, D_RED ]
             neopixels[0] = RED
@@ -209,9 +231,9 @@ while True:
     elif mode == 1:                 # both solid green
         if not mode_initiated:
             mode_initiated = True
-            modenum_textbox.text = str(mode)
-            line1_textbox.text = "GREEN GREEN"
-            line2_textbox.text = "   SOLID"
+            display_line1("GREEN GREEN")
+            display_line2("SOLID")
+            display_line3(str(mode))
             left_colors = [ D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN ]
             right_colors = [ D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN, D_GREEN ]
             neopixels[0] = GREEN
@@ -221,9 +243,9 @@ while True:
     elif mode == 2:                 # both solid blue
         if not mode_initiated:
             mode_initiated = True
-            modenum_textbox.text = str(mode)
-            line1_textbox.text = " BLUE BLUE"
-            line2_textbox.text = "   SOLID"
+            display_line1("BLUE BLUE")
+            display_line2("SOLID")
+            display_line3(str(mode))
             left_colors = [ D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE ]
             right_colors = [ D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE, D_BLUE ]
             neopixels[0] = BLUE
@@ -233,9 +255,9 @@ while True:
     elif mode == 3:                 # both solid yellow
         if not mode_initiated:
             mode_initiated = True
-            modenum_textbox.text = str(mode)
-            line1_textbox.text = "YELLO YELLO"
-            line2_textbox.text = "   SOLID"
+            display_line1("YELLO YELLO")
+            display_line2("SOLID")
+            display_line3(str(mode))
             left_colors = [ D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW ]
             right_colors = [ D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW, D_YELLOW ]
             neopixels[0] = YELLOW
@@ -247,9 +269,9 @@ while True:
             mode_initiated = True
             mode_phase = 0
             mode_duration_counter = 99          # force it to rewrite LEDs at first loop
-            modenum_textbox.text = str(mode)
-            line1_textbox.text = " RED GREEN"
-            line2_textbox.text = "    FLIP"
+            display_line1("RED GREEN")
+            display_line2("FLIP")
+            display_line3(str(mode))
             left_colors = [ D_RED, D_RED, D_GREEN, D_GREEN, D_RED, D_RED, D_GREEN, D_GREEN ]
             right_colors = [ D_GREEN, D_GREEN, D_RED, D_RED, D_GREEN, D_GREEN, D_RED, D_RED ]
         else:
@@ -270,9 +292,9 @@ while True:
             mode_initiated = True
             mode_phase = 0
             mode_duration_counter = 99          # force it to rewrite LEDs at first loop
-            modenum_textbox.text = str(mode)
-            line1_textbox.text = "YELLO YELLO"
-            line2_textbox.text = "   FLASH"
+            display_line1("YELLO YELLO")
+            display_line2("FLASH")
+            display_line3(str(mode))
             left_colors = [ D_YELLOW, D_YELLOW, D_BLACK, D_BLACK, D_YELLOW, D_YELLOW, D_BLACK, D_BLACK ]
             right_colors = [ D_YELLOW, D_YELLOW, D_BLACK, D_BLACK, D_YELLOW, D_YELLOW, D_BLACK, D_BLACK ]
         else:
@@ -293,9 +315,9 @@ while True:
             mode_initiated = True
             mode_phase = 0
             mode_duration_counter = 99          # force it to rewrite LEDs at first loop
-            modenum_textbox.text = str(mode)
-            line1_textbox.text = "BLUE YELLOW"
-            line2_textbox.text = "    FLIP"
+            display_line1("BLUE YELLOW")
+            display_line2("FLIP")
+            display_line3(str(mode))
             left_colors = [ D_BLUE, D_BLUE, D_YELLOW, D_YELLOW, D_BLUE, D_BLUE, D_YELLOW, D_YELLOW ]
             right_colors = [ D_YELLOW, D_YELLOW, D_BLUE, D_BLUE, D_YELLOW, D_YELLOW, D_BLUE, D_BLUE ]
         else:
@@ -316,9 +338,9 @@ while True:
             mode_initiated = True
             mode_phase = 0
             mode_duration_counter = 99          # force it to rewrite LEDs at first loop
-            modenum_textbox.text = str(mode)
-            line1_textbox.text = "ORANG YELLO"
-            line2_textbox.text = "    FLIP"
+            display_line1("ORANG YELLO")
+            display_line2("FLIP")
+            display_line3(str(mode))
             left_colors = [ D_ORANGE, D_ORANGE, D_YELLOW, D_YELLOW, D_ORANGE, D_ORANGE, D_YELLOW, D_YELLOW ]
             right_colors = [ D_YELLOW, D_YELLOW, D_ORANGE, D_ORANGE, D_YELLOW, D_YELLOW, D_ORANGE, D_ORANGE ]
         else:
@@ -338,9 +360,9 @@ while True:
         if not mode_initiated:
             mode_initiated = True
             mode_duration_counter = 99          # force it to rewrite LEDs at first loop
-            modenum_textbox.text = str(mode)
-            line1_textbox.text = "  PUMPKIN"
-            line2_textbox.text = " "
+            display_line1("PUMPKIN")
+            display_line2(" ")
+            display_line3(str(mode))
             left_colors = [ D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_WHITE ]
             right_colors = [ D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_ORANGE, D_WHITE ]
         else:
@@ -368,9 +390,9 @@ while True:
             mode_initiated = True
             mode_phase = 0
             mode_duration_counter = 99          # force it to rewrite LEDs at first loop
-            modenum_textbox.text = str(mode)
-            line1_textbox.text = " RED GREEN"
-            line2_textbox.text = " FAST FLIP"
+            display_line1("RED GREEN")
+            display_line2("FAST FLIP")
+            display_line3(str(mode))
             left_colors = [ D_RED, D_GREEN, D_RED, D_GREEN, D_RED, D_GREEN, D_RED, D_GREEN ]
             right_colors = [ D_GREEN, D_RED, D_GREEN, D_RED , D_GREEN, D_RED, D_GREEN, D_RED ]
         else:
@@ -391,9 +413,9 @@ while True:
         if not mode_initiated:
             mode_phase = 1
             mode_initiated = True
-            modenum_textbox.text = "R"
-            line1_textbox.text = "  RAINBOW"
-            line2_textbox.text = " "
+            display_line1("RAINBOW")
+            display_line2(" ")
+            display_line3(str(mode))
             left_colors = [ D_RED, D_RED, D_RED, D_ORANGE, D_ORANGE, D_ORANGE, D_YELLOW, D_YELLOW ]
             right_colors = [ D_YELLOW, D_YELLOW, D_GREEN, D_GREEN, D_GREEN, D_BLUE, D_BLUE, D_BLUE ]
         else:
@@ -403,5 +425,3 @@ while True:
             neopixels[0] = wheel(mode_phase)
             neopixels[1] = wheel((mode_phase + 128) & 255)          
             neopixels.show()
-
-    # time.sleep(0.1)
