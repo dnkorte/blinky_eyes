@@ -149,7 +149,7 @@ mode_duration_counter = 0
 mode_phase = 0
 HIGHEST_MODE = 10
 icon_counter = 0
-loop_master_counter = 0
+fastloop_counter = 0
 
 # Built in red LED
 led = DigitalInOut(board.D13)
@@ -177,9 +177,9 @@ while True:
         mode_phase = 0
 
     time.sleep(0.01)
-    loop_master_counter += 1
-    if loop_master_counter > 9:
-        loop_master_counter = 0
+    fastloop_counter += 1
+    if fastloop_counter > 9:
+        fastloop_counter = 0
     else:
         continue
 
@@ -244,11 +244,9 @@ while True:
 
     elif mode == 4:                 # flipping red / green
         if not mode_initiated:
-            # neopixels[0] = RED
-            # neopixels[1] = GREEN
-            # neopixels.show()
             mode_initiated = True
-            mode_phase = 1 
+            mode_phase = 0
+            mode_duration_counter = 99          # force it to rewrite LEDs at first loop
             modenum_textbox.text = str(mode)
             line1_textbox.text = " RED GREEN"
             line2_textbox.text = "    FLIP"
@@ -269,11 +267,9 @@ while True:
 
     elif mode == 5:                 # flashing yellow
         if not mode_initiated:
-            # neopixels[0] = YELLOW
-            # neopixels[1] = YELLOW
-            # neopixels.show()
             mode_initiated = True
-            mode_phase = 1
+            mode_phase = 0
+            mode_duration_counter = 99          # force it to rewrite LEDs at first loop
             modenum_textbox.text = str(mode)
             line1_textbox.text = "YELLO YELLO"
             line2_textbox.text = "   FLASH"
@@ -291,15 +287,12 @@ while True:
                     mode_phase = 0
                 neopixels.show()
                 mode_duration_counter = 0
-            mode_initiated = True
 
     elif mode == 6:                 # flipping blue / yellow
         if not mode_initiated:
-            # neopixels[0] = YELLOW
-            # neopixels[1] = BLUE
-            # opixels.show()
             mode_initiated = True
-            mode_phase = 1
+            mode_phase = 0
+            mode_duration_counter = 99          # force it to rewrite LEDs at first loop
             modenum_textbox.text = str(mode)
             line1_textbox.text = "BLUE YELLOW"
             line2_textbox.text = "    FLIP"
@@ -320,11 +313,9 @@ while True:
 
     elif mode == 7:                 # flipping orange / yellow
         if not mode_initiated:
-            # neopixels[0] = YELLOW
-            # neopixels[1] = ORANGE
-            # neopixels.show()
             mode_initiated = True
-            mode_phase = 1
+            mode_phase = 0
+            mode_duration_counter = 99          # force it to rewrite LEDs at first loop
             modenum_textbox.text = str(mode)
             line1_textbox.text = "ORANG YELLO"
             line2_textbox.text = "    FLIP"
@@ -345,10 +336,8 @@ while True:
 
     elif mode == 8:                 # pulsing orange and white for pumpkin eyes
         if not mode_initiated:
-            # neopixels[0] = ORANGE
-            # neopixels[1] = ORANGE
-            # neopixels.show()
             mode_initiated = True
+            mode_duration_counter = 99          # force it to rewrite LEDs at first loop
             modenum_textbox.text = str(mode)
             line1_textbox.text = "  PUMPKIN"
             line2_textbox.text = " "
@@ -376,11 +365,9 @@ while True:
 
     elif mode == 9:                 # fast flipping red / green
         if not mode_initiated:
-            # neopixels[0] = RED
-            # neopixels[1] = GREEN
-            # neopixels.show()
             mode_initiated = True
-            mode_phase = 1
+            mode_phase = 0
+            mode_duration_counter = 99          # force it to rewrite LEDs at first loop
             modenum_textbox.text = str(mode)
             line1_textbox.text = " RED GREEN"
             line2_textbox.text = " FAST FLIP"
@@ -399,12 +386,10 @@ while True:
                 neopixels.show()
                 mode_duration_counter = 0
 
+
     elif mode == 10:                 
         if not mode_initiated:
             mode_phase = 1
-            # neopixels[0] = BLACK
-            # neopixels[1] = BLACK
-            # neopixels.show()
             mode_initiated = True
             modenum_textbox.text = "R"
             line1_textbox.text = "  RAINBOW"
